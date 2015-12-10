@@ -1,0 +1,835 @@
+---
+title: "Projekt1"
+author: "Jerzy Jankowski"
+date: "29 listopada 2015"
+output: 
+  html_document: 
+    keep_md: yes
+---
+<h2>Spis treści</h2>
+<ol>
+<li value="0"><a href="#zad0">Podsumowanie</a></li>
+<li><a href="#zad1">Kod wyliczający wykorzystane biblioteki;</a></li>
+<li><a href="#zad2">Kod zapewniający powtarzalność wyników przy każdym uruchomieniu raportu na tych samych danych;</a></li>
+<li><a href="#zad3">Kod pozwalający wczytać dane z pliku;</a></li>
+<li><a href="#zad4">Kod usuwający z danych wiersze posiadające wartość zmiennej res_name równą: “DA”,“DC”,“DT”, “DU”, “DG”, “DI”,“UNK”, “UNX”, “UNL”, “PR”, “PD”, “Y1”, “EU”, “N”, “15P”, “UQ”, “PX4” lub “NAN”;</a></li>
+<li><a href="#zad5">Kod pozostawiający tylko unikatowe pary wartości (pdb_code, res_name)</a></li>
+<li><a href="#zad6">Krótkie podsumowanie wartości w każdej kolumnie;</a></li>
+<li>
+<a href="#zad7">Sekcje sprawdzającą korelacje między zmiennymi; sekcja ta powinna zawierać jakąś formę graficznej prezentacji korelacji;</a>
+<ul>
+<li><a href="#zad7_1">Podejście 1 - atrybuty nie rozpoczynające się na "part_"</a></li>
+<li><a href="#zad7_2">Podejście 2 - atrybuty rozpoczynające się na "part_00_"</a></li>
+<li><a href="#zad7_3">Podejście 3 - porównanie atrybutów z dwóch poprzednich podejść</a></li>
+<li><a href="#zad7_4">Podejście 4 - porównanie atrybutów rozpoczynających się na "part_00_" i "part_01_"</a></li>
+</ul>
+</li>
+<li><a href="#zad8">Określenie ile przykładów ma każda z klas (res_name);</a></li>
+<li><a href="#zad9">Wykresy rozkładów liczby atomów (local_res_atom_non_h_count) i elektronów (local_res_atom_non_h_electron_sum);</a></li>
+<li><a href="#zad10">Próbę odtworzenia następującego wykresu (oś X - liczba elektronów, oś y - liczba atomów): Wykres liczby atomów i elektronów</a></li>
+<li><a href="#zad11">Tabelę pokazującą 10 klas z największą niezgodnością liczby atomów (local_res_atom_non_h_count vs dict_atom_non_h_count) i tabelę pokazującą 10 klas z największą niezgodnością liczby elektronów (local_res_atom_non_h_electron_sum vs dict_atom_non_h_electron_sum;)</a></li>
+<li><a href="#zad12">Sekcję pokazującą rozkład wartości wszystkich kolumn zaczynających się od part_01 z zaznaczeniem (graficznym i liczbowym) średniej wartości;</a></li>
+<li><a href="#zad13">Sekcję sprawdzającą czy na podstawie wartości innych kolumn można przewidzieć liczbę elektronów i atomów oraz z jaką dokładnością można dokonać takiej predykcji; trafność regresji powinna zostać oszacowana na podstawie miar R^2 i RMSE;</a></li>
+<li><a href="#zad14">Sekcję próbującą stworzyć klasyfikator przewidujący wartość atrybutu res_name (w tej sekcji należy wykorzystać wiedzę z pozostałych punktów oraz wykonać dodatkowe czynności, które mogą poprawić trafność klasyfikacji); trafność klasyfikacji powinna zostać oszacowana na danych inne niż uczące za pomocą mechanizmu (stratyfikowanej!) oceny krzyżowej lub (stratyfikowanego!) zbioru testowego.</a></li>
+
+<h2 id="zad0">Podsumowanie</h2>
+<h4>Na podstawie opisu danych</h4>
+Można wywnioskować, że kolumny  zaczynające się od "part_" opisujące ten sam atrybut, ale z zamaskowanymi innymi intensywnościami (wg innego progu odcięcia) są ze sobą silnie skorelowane, dlatego też w poniższej analizie pominięto kolumny rozpoczynające się na part_0X, gdzie X to cyfra z zakresu 1-9. Zostało to także pokazane w zadaniu 7.
+Na podstawie zadania 6:
+Można wywnioskowa, że local_BAa, local_NPa, local_Ra, local_SRGa, local_CCSa, local_CCPa, local_ZOa, local_ZDa, local_ZD_minus_a, local_ZD_plus_a, weight_col zawierają jedynie wartości NA, natomiast kolumny:
+part_00_shape_I6_scaled, part_01_shape_I6_scaled, part_02_shape_I6_scaled, ..., local_min, fo_col, fc_col, grid_space, solvent_radius, solvent_opening_radius, resolution_max_limit, part_step_FoFc_std_min, part_step_FoFc_std_max, part_step_FoFc_std_step zawierają taką samą wartość dla każdego wiersza.
+Powyższe kolumny zatem nie wnoszą żadnej znaczącej wiedzy.
+
+<h4>Na podstawie zadania 7:</h4>
+Grupy silnie skorelowanych ze sobą atrybutów:
+<ul>
+<li>
+local_res_atom_count<br/>
+local_res_atom_non_h_count<br/>
+local_res_atom_non_h_occupancy_sum<br/>
+local_res_atom_non_h_electron_sum<br/>
+local_res_atom_non_h_electron_occupancy_sum<br/>
+local_res_atom_C_count<br/>
+local_res_atom_N_count<br/>
+local_res_atom_O_count<br/>
+local_res_atom_S_count<br/>
+dict_atom_non_h_count<br/>
+dict_atom_non_h_electron_sum<br/>
+dict_atom_C_count<br/>
+dict_atom_N_count<br/>
+dict_atom_O_count<br/>
+dict_atom_S_count<br/>
+local_volume<br/>
+local_electrons<br/>
+</li>
+<li>
+local_parts
+</li>
+<li>
+TwoFoFc_mean<br/>
+Fo_mean<br/>
+FoFc_mean<br/>
+</li>
+<li> 
+Fc_mean
+</li>
+<li>
+solvent_mask_count<br/>
+void_mask_count<br/>
+modeled_mask_count<br/>
+solvent_ratio<br/>
+</li>
+<li>
+TwoFoFc_bulk_std<br/>
+Fo_bulk_mean<br/>
+Fc_bulk_mean<br/>
+TwoFoFc_solvent_fit_normal_mean<br/>
+</li>
+<li>
+TwoFoFc_modeled_mean<br/>
+Fo_modeled_mean<br/>
+Fc_modeled_mean<br/>
+</li>
+<li>
+FoFc_bulk_mean
+</li>
+<li>
+TwoFoFc_void_fit_binormal_scale
+</li>
+<li>
+TwoFoFc_void_fit_binormal_mean2<br/>
+TwoFoFc_void_fit_binormal_std2<br/>
+</li>
+<li>
+local_mean<br/>
+local_std<br/>
+local_max<br/>
+local_skewness<br/>
+resolution<br/>
+TwoFoFc_std<br/>
+TwoFoFc_square_std<br/>
+TwoFoFc_min<br/>
+TwoFoFc_max<br/>
+Fo_std<br/>
+Fo_square_std<br/>
+Fo_min<br/>
+Fo_max<br/>
+FoFc_std<br/>
+FoFc_square_std<br/>
+FoFc_min<br/>
+FoFc_max<br/>
+Fc_std<br/>
+Fc_square_std<br/>
+Fc_min<br/>
+Fc_max<br/>
+TwoFoFc_bulk_mean<br/>
+TwoFoFc_void_mean<br/>
+TwoFoFc_void_std<br/>
+TwoFoFc_modeled_std<br/>
+Fo_bulk_std<br/>
+Fo_void_mean<br/>
+Fo_void_std<br/>
+Fo_modeled_std<br/>
+FoFc_bulk_std<br/>
+FoFc_void_mean<br/>
+FoFc_void_std<br/>
+FoFc_modeled_mean<br/>
+FoFc_modeled_std<br/>
+Fc_bulk_std<br/>
+Fc_void_mean<br/>
+Fc_void_std<br/>
+Fc_modeled_std<br/>
+TwoFoFc_void_fit_binormal_mean1<br/>
+TwoFoFc_void_fit_binormal_std1<br/>
+TwoFoFc_solvent_fit_normal_std<br/>
+</li>
+</ul>
+
+<br/>
+Można zauważyć, że część wykresu odpowiadająca za korelację atrybutów 4-36 jest bardzo podobna do korelacji atrybutów 37-69. Okazuje się, że atrybuty należące do pierwszej grupy noszą nazwy rozpoczynające się "part_00_shape_", podczas gdy nazwy atrybutów z drugiej grupy zopoczynają się na "part_00_density_", pozostałe części nazw dla odpowiednich kolumn są takie same.
+Grupy silnie skorelowanych ze sobą atrybutów:
+<ul>
+<li>
+part_00_blob_electron_sum<br/>
+part_00_blob_volume_sum<br/>
+part_00_shape_O3<br/>
+part_00_shape_M000<br/>
+part_00_shape_sqrt_E1<br/>
+part_00_shape_sqrt_E2<br/>
+part_00_shape_sqrt_E3<br/>
+part_00_density_O3<br/>
+part_00_density_M000<br/>
+part_00_density_sqrt_E1<br/>
+part_00_density_sqrt_E2<br/>
+part_00_density_sqrt_E3<br/>
+</li>
+<li>
+part_00_shape_O4<br/>
+part_00_shape_O5<br/>
+part_00_shape_FL<br/>
+part_00_shape_I1<br/>
+part_00_shape_I2<br/>
+part_00_shape_I3<br/>
+part_00_shape_I4<br/>
+part_00_shape_I5<br/>
+part_00_shape_I6<br/>
+part_00_density_O4<br/>
+part_00_density_O5<br/>
+part_00_density_FL<br/>
+part_00_density_I1<br/>
+part_00_density_I2<br/>
+part_00_density_I3<br/>
+part_00_density_I4<br/>
+part_00_density_I5<br/>
+part_00_density_I6<br/>
+</li>
+<li>
+part_00_shape_O3_norm<br/>
+part_00_shape_O4_norm<br/>
+part_00_shape_O5_norm<br/>
+part_00_shape_FL_norm<br/>
+part_00_shape_I1_norm<br/>
+part_00_shape_I2_norm<br/>
+part_00_shape_I3_norm<br/>
+part_00_shape_I4_norm<br/>
+part_00_shape_I5_norm<br/>
+part_00_shape_I6_norm<br/>
+part_00_shape_I1_scaled<br/>
+part_00_shape_I2_scaled<br/>
+part_00_shape_I3_scaled<br/>
+part_00_shape_I4_scaled<br/>
+part_00_shape_I5_scaled<br/>
+part_00_shape_I6_scaled<br/>
+</li>
+<li>
+part_00_shape_E3_E1<br/>
+part_00_shape_E2_E1<br/>
+part_00_shape_E3_E2<br/>
+part_00_density_E3_E1<br/>
+part_00_density_E2_E1<br/>
+part_00_density_E3_E2<br/>
+</li>
+<li>
+part_00_density_I1_norm<br/>
+part_00_density_I2_norm<br/>
+part_00_density_I3_norm<br/>
+part_00_density_I4_norm<br/>
+part_00_density_I5_norm<br/>
+part_00_density_I6_norm<br/>
+part_00_density_I1_scaled<br/>
+</li>
+<li>
+part_00_density_I1_scaled(powtórzony zapis)<br/>
+part_00_density_I2_scaled<br/>
+part_00_density_I3_scaled<br/>
+part_00_density_I4_scaled<br/>
+part_00_density_I5_scaled<br/>
+part_00_density_I6_scaled<br/>
+</li>
+<li>
+part_00_density_O3_norm<br/>
+part_00_density_O4_norm<br/>
+part_00_density_O5_norm<br/>
+part_00_density_FL_norm<br/>
+</li>
+<li>
+part_00_blob_parts
+</li>
+</ul>
+
+<br/>
+Grupy atrybutów rozpoczynające się na "part_00_" i nie rozpoczynające się na "part_" są ze sobą bardzo słabo skorelowane. Natomiast dla grup atrybutów, których nazwy rozpoczynają się na "part_00_", "part_01_", itd. widać wyraźną analogię pomiędzy wartościami korelacji odpowiednich atrybutów Wykresy wyglądają jakby składały się z identycznych części.
+
+<h4>Na podstawie zadania 13:</h4>
+Jesteśmy w stanie z bardzo dużą dokładnością przewidzieć wartości local_res_atom_non_h_count ilocal_res_atom_non_h_electron_sum na podstawie innych kolumn. Wynika to z dużej korelacji danych.
+
+<h4>Na podstawie zadania 14:</h4>
+Udało się stworzyć klasyfikator przewidujący klasy z dużą dokładnością (0.9655).
+<a href="#">Idź do góry</a>
+
+<h2 id="zad1">Zad1</h2>Kod wyliczający wykorzystane biblioteki;
+```{r zad1, results='hide', warning=FALSE, message=FALSE}
+library(knitr)
+library(ggplot2)
+library(corrplot)
+library(reshape2)
+library(MASS)
+library(hexbin)
+library(RColorBrewer)
+library(dplyr)
+library(corrplot)
+library(caret)
+library(pROC)
+```
+<a href="#">Idź do góry</a>
+
+<h2 id="zad2">Zad2</h2>Kod zapewniający powtarzalność wyników przy każdym uruchomieniu raportu na tych samych danych;
+```{r zad2, cache=TRUE}
+set.seed(47)
+```
+
+<h2 id="zad3">Zad3</h2>Kod pozwalający wczytać dane z pliku;
+```{r zad3, cache=TRUE}
+PDBdata3 <- read.table(file="all_summary.txt", header=TRUE, sep=";")
+```
+<a href="#">Idź do góry</a>
+
+<h2 id="zad4">Zad4</h2>Kod usuwający z danych wiersze posiadające wartość zmiennej res_name równą: “DA”,“DC”,“DT”, “DU”, “DG”, “DI”,“UNK”, “UNX”, “UNL”, “PR”, “PD”, “Y1”, “EU”, “N”, “15P”, “UQ”, “PX4” lub “NAN”
+```{r zad4, cache=TRUE}
+forbiddenResNames <- c("DA","DC","DT", "DU", "DG", "DI","UNK", "UNX", "UNL", "PR", "PD", "Y1", "EU", "N", "15P", "UQ", "PX4", "NAN") 
+PDBdata4 <- dplyr::filter(PDBdata3, is.na(match(res_name, forbiddenResNames)))
+```
+<a href="#">Idź do góry</a>
+
+<h2 id="zad5">Zad5</h2>Kod pozostawiający tylko unikatowe pary wartości (pdb_code, res_name)
+```{r zad5, cache=TRUE}
+PDBdata5 <- distinct(PDBdata4, diff = (paste(res_name,pdb_code))) 
+PDBdata5 <- select(PDBdata5, -diff)
+```
+<a href="#">Idź do góry</a>
+
+<h2 id="zad6">Zad6</h2>Krótkie podsumowanie wartości w każdej kolumnie;
+```{r zad6, cache=TRUE, warning=FALSE, message=FALSE}
+kable(summary(PDBdata5))
+```
+```{r empty, echo=FALSE, eval=FALSE}
+print("")
+```
+<br/>
+<div>
+<h4>Wnioski</h4>
+Można wywnioskowa, że local_BAa, local_NPa, local_Ra, local_SRGa, local_CCSa, local_CCPa, local_ZOa, local_ZDa, local_ZD_minus_a, local_ZD_plus_a, weight_col zawierają jedynie wartości NA, natomiast kolumny:
+part_00_shape_I6_scaled, part_01_shape_I6_scaled, part_02_shape_I6_scaled, ..., local_min, fo_col, fc_col, grid_space, solvent_radius, solvent_opening_radius, resolution_max_limit, part_step_FoFc_std_min, part_step_FoFc_std_max, part_step_FoFc_std_step zawierają taką samą wartość dla każdego wiersza.
+Powyższe kolumny zatem nie wnoszą żadnej znaczącej wiedzy.
+</div>
+<a href="#">Idź do góry</a>
+
+```{r zad7functions, echo=FALSE, message=FALSE, error=FALSE, warning=FALSE} 
+calculateBigCorr <- function(df, nChunk) {
+  nColumn <- ncol(df)
+  m <- matrix(0, nrow=nColumn, ncol=nColumn)
+  
+  endx <- ifelse(nColumn %% nChunk == 0, nColumn/nChunk, nColumn/nChunk+1)
+  
+  for(x in 1:endx) {
+    #print(paste("*****", x, collapse=""))
+    for(y in 1:endx) {
+      xMatrixStart <- (x-1)*nChunk + 1
+      xMatrixStop <- ifelse(xMatrixStart + nChunk <= nColumn, xMatrixStart + nChunk - 1, nColumn)
+      yMatrixStart <- (y-1)*nChunk + 1
+      yMatrixStop <- ifelse(yMatrixStart + nChunk <= nColumn, yMatrixStart + nChunk - 1, nColumn)
+        
+      chunk1Start <- 1
+      chunk1Stop <- 1 + xMatrixStop - xMatrixStart
+      chunk2Start <- chunk1Stop + 1
+      chunk2Stop <- chunk2Start + yMatrixStop - yMatrixStart
+      
+      #print(y)
+      #print(paste( c("xMatrixStart", "xMatrixStop", "yMatrixStart", "yMatrixStop",  "chunk1Start", "chunk1Stop", "chunk2Start", "chunk2Stop"), c(xMatrixStart, xMatrixStop, yMatrixStart, yMatrixStop,  chunk1Start, chunk1Stop, chunk2Start, chunk2Stop),  sep = " = ", collapse = ";  "))
+      
+      dfTemp <- df[c(xMatrixStart:xMatrixStop, yMatrixStart:yMatrixStop)]
+      corTemp <- cor(dfTemp, method = "pearson")
+      #print(corTemp[chunk1Start:chunk1Stop, chunk2Start:chunk2Stop])
+      corTemp2 <- corTemp[chunk1Start:chunk1Stop, chunk2Start:chunk2Stop]
+      
+      for(k1 in 0:(xMatrixStop-xMatrixStart)) {
+        for(k2 in 0:(yMatrixStop-yMatrixStart)) {
+          m[xMatrixStart + k1, yMatrixStart + k2] <- corTemp[chunk1Start + k1, chunk2Start + k2]
+        }
+      }
+      #print(m)
+    }
+  }
+  m
+}
+
+#PDBdataTry <- PDBdata7[1:21]
+#colnames(PDBdataTry) <- 1:21
+#corrplot(cor(PDBdataTry, method="pearson"), method = "circle", type="full", tl.cex=0.3)
+#c <- cor(PDBdataTry, method="pearson")
+#c
+#print(calculateBigCorr(PDBdataTry, 3))
+```
+
+<h2 id="zad7">Zad7</h2>Sekcje sprawdzającą korelacje między zmiennymi; sekcja ta powinna zawierać jakąś formę graficznej prezentacji korelacji;
+
+<h3 id="zad7_1">Podejście 1</h3>
+Wyodrębnione zostały atrybuty, których nazwy nie zaczynają się na "part_".
+```{r zad7_preparing_1, cache=TRUE}
+PDBdata7 <- PDBdata5[sapply(PDBdata5, is.numeric)]
+PDBdata7 <- PDBdata7[12:ncol(PDBdata7)]
+PDBdata7 <- select(PDBdata7, -local_min, -grid_space, -solvent_radius, -solvent_opening_radius, -resolution_max_limit)
+PDBdata7 <- select(PDBdata7, -starts_with("part_"))
+PDBdata7 <- PDBdata7[complete.cases(PDBdata7),]
+
+legend <- colnames(PDBdata7)
+colnames(PDBdata7) <- 1: ncol(PDBdata7)
+```
+
+<h4>Wykres</h4>
+```{r zad7_drawing_1, cache=TRUE}
+#Wykorzystana poniżej funkcja 'calculateBigCorr' to funkcja autorska, która dzieli zadany data frame na mniejsze bloki, wylicza dla nich macierz korelacji. Wynikowa macierz korelacji jest macierzą sklejoną z pozostałych.
+corrplot(cor(calculateBigCorr(PDBdata7, 20), method="pearson"), method = "circle", type="full", tl.cex=0.3, sub="title")
+ 
+```
+
+<h4>Legenda</h4>
+```{r zad7_legend_1, cache=TRUE}
+cat(paste(1:ncol(PDBdata7), legend, sep=" - ", collapse="\n"))
+```
+
+<h4>Wnioski</h4>
+Grupy silnie skorelowanych ze sobą atrybutów:
+<ul>
+<li>
+local_res_atom_count<br/>
+local_res_atom_non_h_count<br/>
+local_res_atom_non_h_occupancy_sum<br/>
+local_res_atom_non_h_electron_sum<br/>
+local_res_atom_non_h_electron_occupancy_sum<br/>
+local_res_atom_C_count<br/>
+local_res_atom_N_count<br/>
+local_res_atom_O_count<br/>
+local_res_atom_S_count<br/>
+dict_atom_non_h_count<br/>
+dict_atom_non_h_electron_sum<br/>
+dict_atom_C_count<br/>
+dict_atom_N_count<br/>
+dict_atom_O_count<br/>
+dict_atom_S_count<br/>
+local_volume<br/>
+local_electrons<br/>
+</li>
+<li>
+local_parts
+</li>
+<li>
+TwoFoFc_mean<br/>
+Fo_mean<br/>
+FoFc_mean<br/>
+</li>
+<li> 
+Fc_mean
+</li>
+<li>
+solvent_mask_count<br/>
+void_mask_count<br/>
+modeled_mask_count<br/>
+solvent_ratio<br/>
+</li>
+<li>
+TwoFoFc_bulk_std<br/>
+Fo_bulk_mean<br/>
+Fc_bulk_mean<br/>
+TwoFoFc_solvent_fit_normal_mean<br/>
+</li>
+<li>
+TwoFoFc_modeled_mean<br/>
+Fo_modeled_mean<br/>
+Fc_modeled_mean<br/>
+</li>
+<li>
+FoFc_bulk_mean
+</li>
+<li>
+TwoFoFc_void_fit_binormal_scale
+</li>
+<li>
+TwoFoFc_void_fit_binormal_mean2<br/>
+TwoFoFc_void_fit_binormal_std2<br/>
+</li>
+<li>
+local_mean<br/>
+local_std<br/>
+local_max<br/>
+local_skewness<br/>
+resolution<br/>
+TwoFoFc_std<br/>
+TwoFoFc_square_std<br/>
+TwoFoFc_min<br/>
+TwoFoFc_max<br/>
+Fo_std<br/>
+Fo_square_std<br/>
+Fo_min<br/>
+Fo_max<br/>
+FoFc_std<br/>
+FoFc_square_std<br/>
+FoFc_min<br/>
+FoFc_max<br/>
+Fc_std<br/>
+Fc_square_std<br/>
+Fc_min<br/>
+Fc_max<br/>
+TwoFoFc_bulk_mean<br/>
+TwoFoFc_void_mean<br/>
+TwoFoFc_void_std<br/>
+TwoFoFc_modeled_std<br/>
+Fo_bulk_std<br/>
+Fo_void_mean<br/>
+Fo_void_std<br/>
+Fo_modeled_std<br/>
+FoFc_bulk_std<br/>
+FoFc_void_mean<br/>
+FoFc_void_std<br/>
+FoFc_modeled_mean<br/>
+FoFc_modeled_std<br/>
+Fc_bulk_std<br/>
+Fc_void_mean<br/>
+Fc_void_std<br/>
+Fc_modeled_std<br/>
+TwoFoFc_void_fit_binormal_mean1<br/>
+TwoFoFc_void_fit_binormal_std1<br/>
+TwoFoFc_solvent_fit_normal_std<br/>
+</li>
+</ul>
+<a href="#">Idź do góry</a>
+
+<h3 id="zad7_2">Podejście 2</h3>
+Atrybuty zaczynające się na "part00_"
+```{r zad7_preparing_2, cache=TRUE}
+PDBdata7_2 <- PDBdata5[sapply(PDBdata5, is.numeric)]
+PDBdata7_2 <- PDBdata7_2[12:ncol(PDBdata7_2)]
+PDBdata7_2 <- select(PDBdata7_2, matches("^part_00_.*$"))
+#PDBdata7_2 <- select(PDBdata7_2, -local_min, -grid_space, -solvent_radius, -solvent_opening_radius, -resolution_max_limit, -part_step_FoFc_std_min,	-part_step_FoFc_std_max, -part_step_FoFc_std_step)
+PDBdata7_2 <- PDBdata7_2[complete.cases(PDBdata7_2),]
+legend <- colnames(PDBdata7_2)
+colnames(PDBdata7_2) <- 1: ncol(PDBdata7_2)
+```
+
+<h4>Wykres</h4>
+```{r zad7_drawing_2, cache=TRUE}
+corrplot((calculateBigCorr(PDBdata7_2, 20)), method = "circle", type="full", tl.cex=0.3)
+```
+
+<h4>Legenda</h4>
+```{r zad7_legend_2, cache=TRUE}
+cat(paste(1:ncol(PDBdata7_2), legend, sep=" - ", collapse="\n"))
+```
+
+<h4>Wnioski</h4>
+Można zauważyć, że część wykresu odpowiadająca za korelację atrybutów 4-36 jest bardzo podobna do korelacji atrybutów 37-69. Okazuje się, że atrybuty należące do pierwszej grupy noszą nazwy rozpoczynające się "part_00_shape_", podczas gdy nazwy atrybutów z drugiej grupy zopoczynają się na "part_00_density_", pozostałe części nazw dla odpowiednich kolumn są takie same.
+Grupy silnie skorelowanych ze sobą atrybutów:
+<ul>
+<li>
+part_00_blob_electron_sum<br/>
+part_00_blob_volume_sum<br/>
+part_00_shape_O3<br/>
+part_00_shape_M000<br/>
+part_00_shape_sqrt_E1<br/>
+part_00_shape_sqrt_E2<br/>
+part_00_shape_sqrt_E3<br/>
+part_00_density_O3<br/>
+part_00_density_M000<br/>
+part_00_density_sqrt_E1<br/>
+part_00_density_sqrt_E2<br/>
+part_00_density_sqrt_E3<br/>
+</li>
+<li>
+part_00_shape_O4<br/>
+part_00_shape_O5<br/>
+part_00_shape_FL<br/>
+part_00_shape_I1<br/>
+part_00_shape_I2<br/>
+part_00_shape_I3<br/>
+part_00_shape_I4<br/>
+part_00_shape_I5<br/>
+part_00_shape_I6<br/>
+part_00_density_O4<br/>
+part_00_density_O5<br/>
+part_00_density_FL<br/>
+part_00_density_I1<br/>
+part_00_density_I2<br/>
+part_00_density_I3<br/>
+part_00_density_I4<br/>
+part_00_density_I5<br/>
+part_00_density_I6<br/>
+</li>
+<li>
+part_00_shape_O3_norm<br/>
+part_00_shape_O4_norm<br/>
+part_00_shape_O5_norm<br/>
+part_00_shape_FL_norm<br/>
+part_00_shape_I1_norm<br/>
+part_00_shape_I2_norm<br/>
+part_00_shape_I3_norm<br/>
+part_00_shape_I4_norm<br/>
+part_00_shape_I5_norm<br/>
+part_00_shape_I6_norm<br/>
+part_00_shape_I1_scaled<br/>
+part_00_shape_I2_scaled<br/>
+part_00_shape_I3_scaled<br/>
+part_00_shape_I4_scaled<br/>
+part_00_shape_I5_scaled<br/>
+part_00_shape_I6_scaled<br/>
+</li>
+<li>
+part_00_shape_E3_E1<br/>
+part_00_shape_E2_E1<br/>
+part_00_shape_E3_E2<br/>
+part_00_density_E3_E1<br/>
+part_00_density_E2_E1<br/>
+part_00_density_E3_E2<br/>
+</li>
+<li>
+part_00_density_I1_norm<br/>
+part_00_density_I2_norm<br/>
+part_00_density_I3_norm<br/>
+part_00_density_I4_norm<br/>
+part_00_density_I5_norm<br/>
+part_00_density_I6_norm<br/>
+part_00_density_I1_scaled<br/>
+</li>
+<li>
+part_00_density_I1_scaled(powtórzony zapis)<br/>
+part_00_density_I2_scaled<br/>
+part_00_density_I3_scaled<br/>
+part_00_density_I4_scaled<br/>
+part_00_density_I5_scaled<br/>
+part_00_density_I6_scaled<br/>
+</li>
+<li>
+part_00_density_O3_norm<br/>
+part_00_density_O4_norm<br/>
+part_00_density_O5_norm<br/>
+part_00_density_FL_norm<br/>
+</li>
+<li>
+part_00_blob_parts
+</li>
+</ul>
+<a href="#">Idź do góry</a>
+
+<h3 id="zad7_3">Podejście 3</h3>
+Porównanie ze sobą atrybutów z podejścia 1 (nie zaczynające się na "part_0") z atrybutami z podejścia 2 (zaczynające się na "part_00")
+```{r zad7_preparing_3, cache=TRUE}
+PDBdata7_3 <- PDBdata5[sapply(PDBdata5, is.numeric)]
+PDBdata7_3 <- PDBdata7_3[12:ncol(PDBdata7_3)]
+PDBdata7_3 <- select(PDBdata7_3, -matches("^part_0[123456789]_.*$"))
+PDBdata7_3 <- select(PDBdata7_3, -local_min, -grid_space, -solvent_radius, -solvent_opening_radius, -resolution_max_limit, -part_step_FoFc_std_min,	-part_step_FoFc_std_max, -part_step_FoFc_std_step)
+PDBdata7_3 <- PDBdata7_3[complete.cases(PDBdata7_3),]
+legend <- colnames(PDBdata7_3)
+colnames(PDBdata7_3) <- 1: ncol(PDBdata7_3)
+```
+
+<h4>Wykres</h4>
+```{r zad7_drawing_3, cache=TRUE}
+corrplot((calculateBigCorr(PDBdata7_3, 20)), method = "circle", type="full", tl.cex=0.3)
+```
+
+<h4>Legenda</h4>
+```{r zad7_legend_3, cache=TRUE}
+cat(paste(1:ncol(PDBdata7_3), legend, sep=" - ", collapse="\n"))
+```
+
+<h4>Wnioski</h4>
+Wybrane grupy atrybutów generalnie nie są ze sobą skorelowane.
+<a href="#">Idź do góry</a>
+
+<h3 id="zad7_4">Podejście 4</h3>
+Porównanie ze sobą atrybutów rozpoczynających się na "part_00_" i "part_01"
+```{r zad7_preparing_4, cache=TRUE}
+PDBdata7_4 <- PDBdata5[sapply(PDBdata5, is.numeric)]
+PDBdata7_4 <- PDBdata7_4[12:ncol(PDBdata7_4)]
+PDBdata7_4 <- select(PDBdata7_4, matches("^part_0[01]_.*$"))
+#PDBdata7_3 <- select(PDBdata7_2, -local_min, -grid_space, -solvent_radius, -solvent_opening_radius, -resolution_max_limit, -part_step_FoFc_std_min,	-part_step_FoFc_std_max, -part_step_FoFc_std_step)
+PDBdata7_4 <- PDBdata7_4[complete.cases(PDBdata7_4),]
+legend <- colnames(PDBdata7_4)
+colnames(PDBdata7_4) <- 1: ncol(PDBdata7_4)
+```
+
+<h4>Wykres</h4>
+```{r zad7_drawing_4, cache=TRUE}
+corrplot((calculateBigCorr(PDBdata7_4, 20)), method = "circle", type="full", tl.cex=0.3)
+```
+
+<h4>Legenda</h4>
+```{r zad7_legend_4, cache=TRUE}
+cat(paste(1:ncol(PDBdata7_4), legend, sep=" - ", collapse="\n"))
+```
+<p></p>
+<h4>Wnioski</h4>
+Widać wyraźną analogię pomiędzy wartościami korelacji odpowiednich atrybutów. Wykres wygląda jakby składał się z czterech niemal identycznych części.
+<a href="#">Idź do góry</a>
+
+<h2 id="zad8">Zad8</h2>Określenie ile przykładów ma każda z klas (res_name);
+```{r zad8, cache=TRUE}
+#table(PDBdata5$res_name)
+data.frame(select(PDBdata5,res_name) %>% group_by(res_name) %>% summarize(count=n()) %>% arrange(desc(count)))
+```
+<a href="#">Idź do góry</a>
+
+<h2 id="zad9">Zad9</h2>Wykresy rozkładów liczby atomów (local_res_atom_non_h_count) i elektronów (local_res_atom_non_h_electron_sum);
+```{r zad9, cache=TRUE}
+df1 <- data.frame(select(PDBdata5, local_res_atom_non_h_count))%>% filter(!is.na(local_res_atom_non_h_count))
+ggplot(df1, aes(local_res_atom_non_h_count)) + geom_bar(binwidth = 1)
+
+
+df2 <- select(PDBdata5, local_res_atom_non_h_electron_sum) %>% filter(!is.na(local_res_atom_non_h_electron_sum))
+ggplot(df2, aes(local_res_atom_non_h_electron_sum)) + geom_bar(binwidth = 5)
+```
+<h4>Wnioski</h4>
+Na 2685 różnych nazw klas, 2015 z nich występuje raz, 260 - dwa razy, 115 - trzy razy, 62 - cztery razy, 39 - 6 razy, 92 - sześć do dziesięć razy, 49 - jedenaście do dwadzieścia razy. Tylko 53 klasy występują ponad dwadzieścia razy w danych wyizolowanych z punku 5 powyższej analizy.
+<p></p>
+<a href="#">Idź do góry</a>
+
+<h2 id="zad10">Zad10</h2>Próbę odtworzenia wykresu (oś X - liczba elektronów, oś y - liczba atomów):
+```{r zad10, cache=TRUE}
+rf <- colorRampPalette(rev(brewer.pal(11,'Spectral')))
+r <- rf(32)
+
+maxc <- max(PDBdata5$local_res_atom_non_h_count)
+maxh <- max(PDBdata5$local_res_atom_non_h_electron_sum)
+
+zad10x <- PDBdata5$local_res_atom_non_h_count
+zad10y <- PDBdata5$local_res_atom_non_h_electron_sum
+
+h1 <- hist(zad10y, breaks=100, plot=F)
+h2 <- hist(zad10x, breaks=50, plot=F)
+top <- max(h1$counts, h2$counts)
+k <- kde2d(zad10y, zad10x, n=200)
+
+oldpar <- par()
+par(mar=c(3,3,1,1))
+layout(matrix(c(2,0,1,3),2,2,byrow=T),c(3,1), c(1,3))
+image(k, col=r)
+par(mar=c(0,2,1,0))
+barplot(h1$counts, axes=F, ylim=c(-10, top), space=0, col='red')
+par(mar=c(2,0,0.5,1))
+barplot(h2$counts, axes=F, xlim=c(0, top), space=0, col='red', horiz=T)
+```
+<p>
+<a href="#">Idź do góry</a>
+</p>
+
+<h2 id="zad11">Zad11</h2>Tabelę pokazującą 10 klas z największą niezgodnością liczby atomów (local_res_atom_non_h_count vs dict_atom_non_h_count) i tabelę pokazującą 10 klas z największą niezgodnością liczby elektronów (local_res_atom_non_h_electron_sum vs dict_atom_non_h_electron_sum;)
+```{r zad11, cache=TRUE}
+
+head(
+  mutate(PDBdata5, diff=abs(local_res_atom_non_h_count - dict_atom_non_h_count))
+    %>%dplyr::select(res_name, diff)
+    %>%group_by(res_name)
+    %>%summarise(sumDiff = sum(diff))
+    %>%arrange(desc(sumDiff))
+  ,10)
+  
+head(
+  mutate(PDBdata5, diff=abs(local_res_atom_non_h_electron_sum  - dict_atom_non_h_electron_sum))
+    %>%dplyr::select(res_name, diff)
+    %>%group_by(res_name)
+    %>%summarise(sumDiff = sum(diff))
+    %>%arrange(desc(sumDiff))
+  ,10)
+```
+<a href="#">Idź do góry</a>
+
+<h2 id="zad12">Zad12</h2>Sekcję pokazującą rozkład wartości wszystkich kolumn zaczynających się od part_01 z zaznaczeniem (graficznym i liczbowym) średniej wartości;
+```{r zad12, cache=TRUE, warning=FALSE, message=FALSE}
+#part01Cols <- dplyr::select(PDBdata5, starts_with("part_01"))
+part01Cols <- dplyr::select(PDBdata5, part_01_density_I2, part_01_blob_electron_sum)
+
+for(i in names(part01Cols)) {
+  part01ColsN <- part01Cols[[i]][!is.na(part01Cols[[i]])]
+  meanPart <- mean(part01ColsN)
+  print(ggplot(part01Cols, aes(x=part01Cols[[i]], ifelse=!is.na(part01Cols[[i]]))) + geom_bar() + xlab(i)+ theme(legend.position="none")
+         + geom_point(aes(x=meanPart,y=0, colour="red"))
+         + geom_text(aes(label=round(meanPart,2), x=meanPart, y=0),hjust=0, vjust=1, colour="red")
+  )
+}
+```
+<p>
+<a href="#">Idź do góry</a>
+</p>
+
+<h2 id="zad13">Zad13</h2>Sekcję sprawdzającą czy na podstawie wartości innych kolumn można przewidzieć liczbę elektronów i atomów oraz z jaką dokładnością można dokonać takiej predykcji; trafność regresji powinna zostać oszacowana na podstawie miar R^2 i RMSE;
+```{r zad13_1, cache=TRUE}
+PDBdata13 <- PDBdata5[sapply(PDBdata5, is.numeric)]
+PDBdata13 <- PDBdata13[12:ncol(PDBdata13)]
+PDBdata13 <- PDBdata13[complete.cases(PDBdata13),]
+
+mod <- lm(PDBdata13$local_res_atom_non_h_count ~ . , data = PDBdata13)
+r2 <- summary(mod)$r.squared
+rmse <- summary(mod)$sigma
+```
+```{r zad13_1_answer, cache=TRUE, echo=FALSE}
+print("Funkcja regresji dla local_res_atom_non_h_count:")
+print(paste(c("R^2","RMSE"), c(r2, rmse), collapse="=", sep=", "))
+```
+
+```{r zad13_2, cache=TRUE}
+mod <- lm(PDBdata13$local_res_atom_non_h_electron_sum ~ . , data = PDBdata13)
+r2 <- summary(mod)$r.squared
+rmse <- summary(mod)$sigma
+```
+```{r zad13_2_answer, cache=TRUE, echo=FALSE}
+print("Funkcja regresji dla local_res_atom_non_h_electron_sum:")
+print(paste(c("R^2","RMSE"), c(r2, rmse), collapse="=", sep=", "))
+```
+<h4>Wnioski</h4>
+Z bardzo dużą dokładnością można przewidzieć wartości local_res_atom_non_h_count ilocal_res_atom_non_h_electron_sum na podstawie innych kolumn.
+<p>
+<a href="#">Idź do góry</a>
+</p>
+
+<h2 id="zad14">Zad14</h2>Sekcję próbującą stworzyć klasyfikator przewidujący wartość atrybutu res_name (w tej sekcji należy wykorzystać wiedzę z pozostałych punktów oraz wykonać dodatkowe czynności, które mogą poprawić trafność klasyfikacji); trafność klasyfikacji powinna zostać oszacowana na danych inne niż uczące za pomocą mechanizmu (stratyfikowanej!) oceny krzyżowej lub (stratyfikowanego!) zbioru testowego.
+```{r zad14_preparing_data, cache=TRUE}
+PDBdata14 <- select(PDBdata5, -title, -matches("part_0[123456789]_"))
+
+PDBdata14$res_name_factor<-factor(PDBdata14$res_name)
+PDBdata14 <- select(PDBdata14, -res_name)
+
+xtab <- as.data.frame(table(select(PDBdata14, res_name_factor)))
+xtab <- filter(xtab, Freq>=50)
+
+PDBdata14_2 <- dplyr::filter(PDBdata14, !is.na(match(res_name_factor, xtab$Var1)))
+PDBdata14_3 <- select(PDBdata14_2, -weight_col,-(5:15), -local_BAa, -local_min, -fo_col, -fc_col, -grid_space,  -solvent_radius, -solvent_opening_radius, -resolution_max_limit, -pdb_code, -chain_id, -res_id)
+PDBdata14_4 <- PDBdata14_3[complete.cases(PDBdata14_3),]
+
+c <- (PDBdata14_4$res_name_factor)
+c <- as.vector(c)
+res_name_2 <- as.factor(c)
+PDBdata14_5 <- cbind(PDBdata14_4, res_name_2)
+PDBdata14_5 <- select(PDBdata14_5, -res_name_factor)
+```
+
+```{r zad14_learning, warning=FALSE, cache=TRUE}
+inTraining <- 
+  createDataPartition(
+    y = PDBdata14_5$res_name_2,
+    p = .70,
+    list = FALSE)
+
+training <- PDBdata14_5[ inTraining,]
+testing  <- PDBdata14_5[-inTraining,]
+
+
+gridCtrl <- trainControl(
+  method = "repeatedcv",
+  classProbs = TRUE,
+  number = 2,
+  repeats = 2)
+
+rfGrid <- expand.grid(mtry = 14)
+```
+
+```{r zad14_training, cache=TRUE, warning=FALSE, message=FALSE}
+rfFit <- train(res_name_2~., 
+               data=training, 
+               method="rf", 
+                metric = "ROC",
+               trControl = gridCtrl,
+               tuneGrid = rfGrid,
+             ntree = 10)
+
+```
+
+```{r zad14_testing, cache=TRUE}
+rfClasses <- predict(rfFit, newdata = testing)
+confusionMatrix(data = rfClasses, testing$res_name)
+```
+<h4>Wnioski</h4>
+<p>
+Stworzony klasyfikator przewiduje klasy z dużą dokładnością (0.9655).
+</p>
+<a href="#">Idź do góry</a>
+
+
