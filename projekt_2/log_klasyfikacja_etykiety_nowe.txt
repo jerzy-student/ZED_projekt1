@@ -1,0 +1,160 @@
+{'n_estimators': 30, 'criterion': 'gini', 'max_depth': 50}
+             precision    recall  f1-score   support
+
+1PE_P6G_PLM_OLA_1PG_PG6_SPH_STE_PAM       0.16      0.64      0.25        11
+        3DR       0.00      0.00      0.00         1
+        5CM       0.00      0.00      0.00         3
+        6OG       0.00      0.00      0.00         0
+        8OG       0.00      0.00      0.00         1
+        A8S       0.00      0.00      0.00         2
+        ABA       1.00      0.25      0.40         4
+ACE_NH2_FMT_SCN_EOH_AZI_NO2_FEO_IUM_CO2_CCN_EMC_C2O_N2O       0.00      0.00      0.00        20
+ACT_DMS_ACY_NO3_IPA_CO3_BCT_BEF_SO3_AF3_GAI_URE_PO3_ACN_MOS_ACM_MGF_BO3       0.28      0.28      0.28        65
+ADE_AZA_GUN_PRF       0.00      0.00      0.00         3
+ADN_MTA_GMP_5AD       0.00      0.00      0.00         3
+ADP_ATP_ANP_GNP_ACP_DTP_GTP_DGT_APC_AGS_GSP_GCP       0.45      0.63      0.52       109
+        ALY       0.20      0.20      0.20         5
+AMP_5GP_CMP_IMP_PCG_XMP       0.00      0.00      0.00        13
+         AU       0.00      0.00      0.00         1
+        B12       1.00      1.00      1.00         1
+         BA       0.00      0.00      0.00         3
+BCL_BPH_BPB_PHO       0.00      0.00      0.00         1
+    BEN_BAM       0.50      0.67      0.57         3
+BEZ_PHB_MBO_SAL_NCA_NPO_NIO_DHB       0.50      0.17      0.25         6
+BOG_BNG_BHG_HTG       0.00      0.00      0.00        11
+         BR       0.60      0.50      0.55         6
+        BRU       0.00      0.00      0.00         3
+        BTB       0.00      0.00      0.00         2
+        BTN       0.67      0.40      0.50         5
+        C2E       0.00      0.00      0.00         1
+        C2F       0.00      0.00      0.00         1
+C8E_OLC_P33_7PE_P4C_ACD       0.00      0.00      0.00         6
+         CA       0.48      0.42      0.45       166
+        CAS       1.00      0.50      0.67         2
+         CD       0.18      0.18      0.18        17
+        CDL       1.00      0.33      0.50         3
+        CIR       0.00      0.00      0.00         2
+CIT_FLC_NCD       0.06      0.05      0.05        22
+         CL       0.32      0.47      0.38        79
+        CME       0.00      0.00      0.00         5
+CMO_OXY_CYN_NO_OH_CUA_0QE_PEO_MOH_PER_CF0_FOR       1.00      0.50      0.67         2
+         CO       0.40      0.15      0.22        13
+COA_ACO_CAA       0.29      0.22      0.25         9
+        CPT       0.00      0.00      0.00         1
+        CR2       0.50      0.50      0.50         2
+        CRO       0.33      0.50      0.40         2
+         CS       0.00      0.00      0.00         3
+        CSD       0.20      0.17      0.18        12
+        CSO       0.00      0.00      0.00         7
+        CSS       0.00      0.00      0.00         2
+        CSX       0.00      0.00      0.00         2
+         CU       0.50      0.08      0.14        25
+        CU1       0.00      0.00      0.00         1
+CXS_DKA_S9L       0.00      0.00      0.00         1
+        DHE       0.00      0.00      0.00         1
+DHT_TES_STR_ASD       1.00      0.80      0.89         5
+        DIO       0.00      0.00      0.00         1
+        DOC       0.00      0.00      0.00         3
+DTT_DTU_DTV       0.00      0.00      0.00         1
+EDO_BME_ETA       0.42      0.36      0.39        96
+        EPE       0.47      0.54      0.50        13
+        F6P       0.00      0.00      0.00         1
+    FAD_FDA       0.64      0.69      0.67        36
+        FBP       0.00      0.00      0.00         3
+         FE       0.44      0.18      0.26        22
+        FE2       0.00      0.00      0.00        11
+        FES       1.00      0.69      0.82        13
+        FME       1.00      0.33      0.50         3
+    FMN_RBF       0.64      0.45      0.53        20
+FOL_MTX_CB3       0.00      0.00      0.00         6
+        GDP       0.00      0.00      0.00        15
+GOL_PGO_SGM_DMF_PGR_PPI_GLV_HAE       0.38      0.67      0.49       204
+        GSH       0.00      0.00      0.00         4
+        GSW       0.00      0.00      0.00         1
+        GTT       0.00      0.00      0.00         0
+        GTX       0.00      0.00      0.00         1
+    H4B_HBI       0.50      0.33      0.40         3
+HC4_PHQ_FER       0.00      0.00      0.00         4
+    HEC_COH       0.00      0.00      0.00         4
+HED_HEZ_OCT_PG0_ACA       0.00      0.00      0.00         7
+        HEM       0.73      0.78      0.76        69
+         HG       0.25      0.12      0.17         8
+        HIC       0.00      0.00      0.00         2
+        HYP       1.00      0.50      0.67         2
+    IDS_S6P       0.00      0.00      0.00         1
+        IHP       0.00      0.00      0.00         0
+        IMD       0.00      0.00      0.00         6
+        IOD       0.86      0.43      0.57        14
+IPH_URA_BNZ_MBN       0.00      0.00      0.00         1
+          K       0.25      0.03      0.05        35
+        KAI       1.00      0.33      0.50         3
+        KCX       0.50      0.25      0.33         4
+        LLP       0.80      0.50      0.62         8
+LMT_DMU_MA4_UMQ_LMU_CM5       1.00      0.12      0.22         8
+        M3L       0.00      0.00      0.00         3
+MAL_LAT_CBI_LBT       0.00      0.00      0.00         8
+MAN_BMA_GAL_FUC_BGC_GLC_XYP_FUL_GLA_XYS_MMA_RAM_BDP_SKM_GCU_XYL_ADA_G2F_GCS_SGC_NOJ_INS_G6D_FCA_ACI       0.15      0.12      0.13        64
+        MES       0.32      0.26      0.29        23
+         MG       0.28      0.26      0.27        81
+        MLE       0.00      0.00      0.00         3
+MLI_MLA_IVA_ASJ       0.00      0.00      0.00         8
+        MLY       0.00      0.00      0.00         8
+        MLZ       0.00      0.00      0.00         5
+         MN       0.36      0.11      0.17        37
+MPD_MRD_POP_PPV_DPO_CP_BET_BOC       0.00      0.00      0.00        22
+        MRG       0.00      0.00      0.00         2
+    MYR_LDA       0.00      0.00      0.00         1
+    NAD_NAP       0.41      0.51      0.45        49
+NAG_NDG_A2G_NGA_MAG       0.31      0.54      0.39        93
+        NCO       0.00      0.00      0.00         2
+    NDP_NAI       0.20      0.04      0.07        23
+        NGT       0.00      0.00      0.00         1
+NHE_MPO_ORP       0.00      0.00      0.00         3
+         NI       0.00      0.00      0.00        16
+        NLE       0.00      0.00      0.00         2
+        NRQ       0.00      0.00      0.00         1
+        OCS       0.00      0.00      0.00         4
+        PCA       0.33      0.29      0.31         7
+PE4_2PE_PE8_PE5_SQU       0.00      0.00      0.00         2
+    PEG_DEP       0.20      0.16      0.18        19
+    PEP_2PG       0.00      0.00      0.00         1
+PG4_SPM_DAO_D12_PG5       0.29      0.09      0.14        22
+PGE_SPD_F09_D10       0.00      0.00      0.00        10
+PGV_EPH_LHG_PTY_PEK       0.00      0.00      0.00         1
+PLP_PMP_PLR       0.70      0.70      0.70        20
+    PRP_GPP       0.00      0.00      0.00         3
+        PSU       1.00      0.50      0.67         2
+         PT       0.00      0.00      0.00         3
+        PTR       0.12      0.50      0.20         2
+PYR_OXL_BU3_OXM_LAC_2OP_TFA       0.00      0.00      0.00         2
+RET_REA_RTL       0.00      0.00      0.00         1
+        SAH       0.19      0.21      0.20        14
+    SAM_SFG       0.50      0.14      0.22         7
+        SEP       0.38      0.16      0.22        19
+    SF4_F3S       0.95      0.95      0.95        22
+        SGN       0.00      0.00      0.00         1
+SIA_DAN_SLB       0.00      0.00      0.00         2
+SIN_PGA_FUM_13P_MAE_MSU_G3P_G3H_PGH       0.00      0.00      0.00         4
+        SNC       0.00      0.00      0.00         1
+SO4_PO4_CAC_NH4_ALF_VO4_CAD_WO4_TBU_2HP_MOO       0.57      0.79      0.66       344
+         SR       0.00      0.00      0.00         4
+        SRM       1.00      0.20      0.33         5
+        STU       0.00      0.00      0.00         1
+        SUC       0.00      0.00      0.00         6
+        TAM       0.00      0.00      0.00         2
+        THP       1.00      1.00      1.00         1
+TLA_TAR_MLT_SRT_OAA_LMR       0.50      0.14      0.22         7
+        TPO       0.86      0.55      0.67        11
+TPP_TDP_TZD       0.00      0.00      0.00         6
+        TRS       0.25      0.06      0.10        16
+TTP_DCP_CTP_TYD_DUP_UTP_CDP_0KX_D3T_DUD       0.00      0.00      0.00         7
+        TYS       0.50      0.25      0.33         4
+ U10_PL9_UQ       0.00      0.00      0.00         1
+U5P_C5P_TMP_UMP_UP6_2YR       0.00      0.00      0.00         7
+        UDP       0.00      0.00      0.00        13
+UPG_UD1_GDU       0.00      0.00      0.00         3
+         YB       0.00      0.00      0.00         1
+        YCM       0.00      0.00      0.00         1
+         ZN       0.56      0.71      0.63       198
+
+avg / total       0.39      0.44      0.39      2569
